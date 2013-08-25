@@ -1,0 +1,28 @@
+PLUGINS="/Users/jlaxson/Desktop/X-Plane 10/Resources/plugins"
+SDK=/Users/jlaxson/Downloads/SDK
+
+TARGET=xgs.xpl
+HEADERS=$(wildcard *.h)
+SOURCES=$(wildcard *.c)
+OBJECTS=$(SOURCES:.c=.o)
+
+CFLAGS=-Wall -I$(SDK)/CHeaders/XPLM -DLIN=1 -fPIC -m32 -fno-stack-protector -arch i386 -arch x86_64
+LNFLAGS= -arch i386 -arch x86_64
+#LIBS=-L/usr/lib32 #$(PLUGINS)/XPLM.so $(PLUGINS)/XPWidgets.so
+LIBS=-F$(SDK)/Libraries/Mac -framework XPLM -framework XPWidgets -bundle -framework CoreFoundation -framework OpenGL
+
+all: $(TARGET)
+
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+	
+$(TARGET): $(OBJECTS)
+	$(CC) -o $(TARGET) $(LNFLAGS) $(OBJECTS) $(LIBS)
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
+install: $(TARGET)
+	cp -f $(TARGET) $(PLUGINS)
+
+        
